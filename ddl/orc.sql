@@ -53,7 +53,7 @@ create table flights (
   CRSDepTime int,
   ArrTime int,
   CRSArrTime int,
-  UniqueCarrier varchar(5),
+  UniqueCarrier varchar(6),
   FlightNum int,
   TailNum varchar(8),
   ActualElapsedTime int,
