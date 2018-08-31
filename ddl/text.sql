@@ -1,4 +1,3 @@
-
 create database if not exists airline_ontime;
 use airline_ontime;
 
@@ -7,7 +6,7 @@ drop table if exists airports_raw;
 drop table if exists airlines_raw;
 drop table if exists planes_raw;
 
-create table flights_raw (
+create external table flights_raw (
   Year int,
   Month int,
   DayofMonth int,
@@ -37,18 +36,14 @@ create table flights_raw (
   NASDelay int,
   SecurityDelay int,
   LateAircraftDelay int
-) 
-ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
-WITH SERDEPROPERTIES (
-                "separatorChar" = ",",
-                "quoteChar"     = '"',
-                "escapeChar"    = "\\"
-                )  
-stored as textfile 
+)
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' lines terminated by '\n'
+stored as textfile
+location "${hivevar:location}/data/airlines/flights_raw"
 tblproperties ("skip.header.line.count"="1")
 ;
 
-create table airports_raw (
+create external table airports_raw (
 	iata string,
 	airport string,
 	city string,
@@ -57,31 +52,23 @@ create table airports_raw (
 	lat double,
 	lon double
 )
-ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
-WITH SERDEPROPERTIES (
-                "separatorChar" = ",",
-                "quoteChar"     = '"',
-                "escapeChar"    = "\\"
-                )  
-stored as textfile 
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' lines terminated by '\n'
+stored as textfile
+location "${hivevar:location}/data/airlines/airports_raw"
 tblproperties ("skip.header.line.count"="1")
 ;
 
-create table airlines_raw (
+create external table airlines_raw (
 	code string,
 	description string
 )
-ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
-WITH SERDEPROPERTIES (
-                "separatorChar" = ",",
-                "quoteChar"     = '"',
-                "escapeChar"    = "\\"
-                )  
-stored as textfile 
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' lines terminated by '\n'
+stored as textfile
+location "${hivevar:location}/data/airlines/airlines_raw"
 tblproperties ("skip.header.line.count"="1")
 ;
 
-create table planes_raw (
+create external table planes_raw (
 	tailnum string,
 	owner_type string,
 	manufacturer string,
@@ -92,42 +79,39 @@ create table planes_raw (
 	engine_type string,
 	year int
 )
-ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.OpenCSVSerde'
-WITH SERDEPROPERTIES (
-                "separatorChar" = ",",
-                "quoteChar"     = '"',
-                "escapeChar"    = "\\"
-                )  
+ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' lines terminated by '\n'
 stored as textfile
+location "${hivevar:location}/data/airlines/planes_raw"
 tblproperties ("skip.header.line.count"="1")
 ;
 
-LOAD DATA LOCAL INPATH './data/1987.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1990.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1993.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1996.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1999.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/2002.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/2005.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/2008.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1988.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1991.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1994.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1997.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/2000.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/2003.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/2006.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1989.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1992.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1995.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/1998.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/2001.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/2004.csv.bz2' INTO TABLE flights_raw;
-LOAD DATA LOCAL INPATH './data/2007.csv.bz2' INTO TABLE flights_raw;
+-- data has to located on HS2 server
+LOAD DATA LOCAL INPATH '/tmp/data/1987.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1990.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1993.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1996.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1999.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/2002.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/2005.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/2008.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1988.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1991.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1994.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1997.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/2000.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/2003.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/2006.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1989.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1992.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1995.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/1998.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/2001.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/2004.csv.bz2' INTO TABLE flights_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/2007.csv.bz2' INTO TABLE flights_raw;
 
-LOAD DATA LOCAL INPATH './data/carriers.csv.gz' INTO TABLE airlines_raw;
-LOAD DATA LOCAL INPATH './data/airports.csv.gz' INTO TABLE airports_raw;
-LOAD DATA LOCAL INPATH './data/plane-data.csv.gz' INTO TABLE planes_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/carriers.csv.gz' INTO TABLE airlines_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/airports.csv.gz' INTO TABLE airports_raw;
+LOAD DATA LOCAL INPATH '/tmp/data/plane-data.csv.gz' INTO TABLE planes_raw;
 
 set hive.cli.print.header=true;
 

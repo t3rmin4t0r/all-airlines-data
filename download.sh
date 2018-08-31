@@ -3,7 +3,7 @@
 set -e -x;
 
 YEARS="\
-1987\
+ 1987\
  1988\
  1989\
  1990\
@@ -26,9 +26,9 @@ YEARS="\
  2007\
  2008";
 
-mkdir -p data/
+mkdir -p /tmp/data/
 
-pushd data;
+pushd /tmp/data/;
 
 for YEAR in $YEARS; do 
 	wget -c http://stat-computing.org/dataexpo/2009/$YEAR.csv.bz2
@@ -39,7 +39,9 @@ wget -c \
   http://stat-computing.org/dataexpo/2009/carriers.csv\
   http://stat-computing.org/dataexpo/2009/plane-data.csv
 
-for each in *.csv; do 
-	rm $each.gz || true 
+for each in *.csv; do
+	rm $each.gz || true
 	gzip -1 $each
 done
+
+popd
